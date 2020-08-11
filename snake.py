@@ -1,14 +1,5 @@
 import pygame
-
-from pygame.locals import (
-    K_UP,
-    K_DOWN,
-    K_LEFT,
-    K_RIGHT,
-    K_ESCAPE,
-    KEYDOWN,
-    QUIT,
-)
+from food import Food
 
 
 class Game:
@@ -16,60 +7,58 @@ class Game:
         super(Game, self).__init__()
         self.screenWidth = 800
         self.screenHeight = 600
-        self.bodySize = 24
+        self.bodySize = 10
         self.screen = pygame.display.set_mode([self.screenWidth, self.screenHeight])
-        self.surface = pygame.Surface((self.bodySize, self.bodySize))
-        self.rect = self.surface.get_rect()
         self.running = True
-        self.direction = 0
-        self.velocity = 1
-        self.window()
-
-    def window(self):
-        self.screen.fill((255, 255, 255))
+        self.snakeLocX = self.screenWidth / 2
+        self.snakeLocXchanged = 0
+        self.snakeLocY = self.screenHeight / 2
+        self.snakeLocYchanged = 0
+        self.clock = pygame.time.Clock()
+        self.snakeSpeed = 15
+        self.food = Food(self.screen)
         self.snake()
 
     def snake(self):
-        self.surface.fill((0, 0, 255))
-
+        self.food.foodLocation()
         while self.running:
             for event in pygame.event.get():
-                if event.type == QUIT:
+                if event.type == pygame.QUIT:
                     self.running = False
 
-            if self.direction == 0:
-                self.rect.center = (self.rect.center[0] + self.velocity, self.rect.center[1])
-            elif self.direction == 1:
-                self.rect.center = (self.rect.center[0] - self.velocity, self.rect.center[1])
-            elif self.direction == 2:
-                self.rect.center = (self.rect.center[0], self.rect.center[1] - self.velocity)
-            elif self.direction == 3:
-                self.rect.center = (self.rect.center[0], self.rect.center[1] + self.velocity)
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        self.snakeLocXchanged = -self.bodySize
+                        self.snakeLocYchanged = 0
+                    elif event.key == pygame.K_RIGHT:
+                        self.snakeLocXchanged = self.bodySize
+                        self.snakeLocYchanged = 0
+                    elif event.key == pygame.K_UP:
+                        self.snakeLocXchanged = 0
+                        self.snakeLocYchanged = -self.bodySize
+                    elif event.key == pygame.K_DOWN:
+                        self.snakeLocXchanged = 0
+                        self.snakeLocYchanged = self.bodySize
 
-            pressedKey = pygame.key.get_pressed()
-            self.update(pressedKey)
-            self.screen.blit(self.surface, self.rect)
-            pygame.display.flip()
+            self.snakeLocX += self.snakeLocXchanged
+            self.snakeLocY += self.snakeLocYchanged
+
+            if self.snakeLocX >= self.screenWidth:
+                self.snakeLocX = self.screenWidth - self.bodySize
+            elif self.snakeLocX < 0:
+                self.snakeLocX = 0
+            elif self.snakeLocY >= self.screenHeight:
+                self.snakeLocY = self.screenHeight - self.bodySize
+            elif self.snakeLocY <= 0:
+                self.snakeLocY = 0
+
             self.screen.fill((255, 255, 255))
-
-    def update(self, pressedKey):
-        if pressedKey[K_RIGHT]:
-            self.direction = 0
-        elif pressedKey[K_LEFT]:
-            self.direction = 1
-        elif pressedKey[K_UP]:
-            self.direction = 2
-        elif pressedKey[K_DOWN]:
-            self.direction = 3
-
-        if self.rect.left < 0:
-            self.rect.left = 0
-        elif self.rect.right > self.screenWidth:
-            self.rect.right = self.screenWidth
-        elif self.rect.top <= 0:
-            self.rect.top = 0
-        elif self.rect.bottom >= self.screenHeight:
-            self.rect.bottom = self.screenHeight
+            pygame.draw.rect(self.screen, (0, 0, 255), [self.snakeLocX, self.snakeLocY, self.bodySize, self.bodySize])
+            self.food.newFood()
+            pygame.display.update()
+            if self.snakeLocX == self.food.foodLocationX and self.snakeLocY == self.food.foodLocationY:
+                self.food.foodLocation()
+            self.clock.tick(self.snakeSpeed)
 
 
 Game()
