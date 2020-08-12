@@ -1,6 +1,7 @@
 import pygame
 from food import Food
 from snake import Snake
+from algorithms.simpleAlgorithm import SimpleAlg
 
 
 class Game:
@@ -8,58 +9,60 @@ class Game:
         super(Game, self).__init__()
         self.screenWidth = 800
         self.screenHeight = 600
-        self.bodySize = 10
         self.screen = pygame.display.set_mode([self.screenWidth, self.screenHeight])
         pygame.display.set_caption("Snake AI")
-        self.running = True
-        self.clock = pygame.time.Clock()
+        self.bodySize = 10
         self.snakeSpeed = 15
+        self.gameOver = False
+        self.clock = pygame.time.Clock()
         self.food = Food(self.screen)
-        self.snakeLength = 1
-        self.snakeList = []
-        self.sn = Snake(self.screen)
-        self.snake()
+        self.snake = Snake(self.screen)
+        self.algorithm = SimpleAlg(self.screen, self.snake)
+        self.gameLoop()
 
-    def snake(self):
+    def gameLoop(self):
+        self.gameOver = False
+        self.snake.gameClose = False
+        self.food = Food(self.screen)
+        self.snake = Snake(self.screen)
+        self.algorithm = SimpleAlg(self.screen, self.snake)
         self.food.foodLocation()
-        while self.running:
+        while not self.gameOver:
+            while self.snake.gameClose:
+                self.screen.fill((255, 255, 255))
+                pygame.display.update()
+                self.gameLoop()
+                # for event in pygame.event.get():
+                #     if event.type == pygame.KEYDOWN:
+                #         if event.key == pygame.K_q:
+                #             self.snake.gameClose = False
+                #             self.gameOver = True
+                #         if event.key == pygame.K_c:
+                #             self.gameLoop()
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.running = False
+                    self.gameOver = True
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
-                        self.sn.snakeLocXchanged = -self.sn.bodySize
-                        self.sn.snakeLocYchanged = 0
+                        self.snake.left()
                     elif event.key == pygame.K_RIGHT:
-                        self.sn.snakeLocXchanged = self.sn.bodySize
-                        self.sn.snakeLocYchanged = 0
+                        self.snake.right()
                     elif event.key == pygame.K_UP:
-                        self.sn.snakeLocXchanged = 0
-                        self.sn.snakeLocYchanged = -self.sn.bodySize
+                        self.snake.up()
                     elif event.key == pygame.K_DOWN:
-                        self.sn.snakeLocXchanged = 0
-                        self.sn.snakeLocYchanged = self.sn.bodySize
+                        self.snake.down()
 
-            self.sn.snakePosition()
-            self.sn.snakeRules()
-
-            self.screen.fill((255, 255, 255))
-            snakeHead = [self.sn.snakeLocX, self.sn.snakeLocY]
-            self.snakeList.append(snakeHead)
-            if len(self.snakeList) > self.snakeLength:
-                del self.snakeList[0]
-
-            self.sn.createSnake(self.sn.bodySize, self.snakeList)
-            # for i in self.snakeList[:-1]:
-            #     if i == snakeHead:
-            #         self.running = False
-
+            self.algorithm.findPath(self.food.foodLocationX, self.food.foodLocationY)
             self.food.newFood()
+            # self.snake.snakePosition()
             pygame.display.update()
-            if self.sn.snakeLocX == self.food.foodLocationX and self.sn.snakeLocY == self.food.foodLocationY:
+            print(self.snake.snakeLocX, self.snake.snakeLocY, self.food.foodLocationX, self.food.foodLocationY)
+            if self.snake.snakeLocX == self.food.foodLocationX and self.snake.snakeLocY == self.food.foodLocationY:
                 self.food.foodLocation()
-                self.snakeLength += 1
+                self.snake.snakeLength += 1
+
             self.clock.tick(self.snakeSpeed)
 
 

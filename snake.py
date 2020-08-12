@@ -2,6 +2,7 @@ import pygame
 
 
 class Snake:
+
     def __init__(self, screen):
         self.screen = screen
         self.bodySize = 10
@@ -9,67 +10,56 @@ class Snake:
         self.snakeLocXchanged = 0
         self.snakeLocY = self.screen.get_height() / 2
         self.snakeLocYchanged = 0
-        self.snakeSpeed = 15
         self.snakeLength = 1
         self.snakeList = []
+        self.snakeHead = []
+        self.gameClose = False
 
-    def createSnake(self, size, snakeList):
-        for i in snakeList:
-            pygame.draw.rect(self.screen, (0, 0, 255), [i[0], i[1], size, size])
+    def createSnake(self):
+        for i in self.snakeList:
+            pygame.draw.rect(self.screen, (0, 0, 255), [i[0], i[1], self.bodySize, self.bodySize])
 
     def snakePosition(self):
         self.snakeLocX += self.snakeLocXchanged
         self.snakeLocY += self.snakeLocYchanged
 
+        self.snakeHead = [self.snakeLocX, self.snakeLocY]
+        self.snakeList.append(self.snakeHead)
+        if len(self.snakeList) > self.snakeLength:
+            del self.snakeList[0]
+
+        self.snakeRules()
+        self.screen.fill((255, 255, 255))
+        self.createSnake()
+
     def snakeRules(self):
-        if self.snakeLocX >= self.screen.get_width():
-            self.snakeLocX = self.screen.get_width() - self.bodySize
-        elif self.snakeLocX < 0:
-            self.snakeLocX = 0
-        elif self.snakeLocY >= self.screen.get_height():
-            self.snakeLocY = self.screen.get_height() - self.bodySize
-        elif self.snakeLocY <= 0:
-            self.snakeLocY = 0
-#     def snake(self):
-#         while self.running:
-#             for event in pygame.event.get():
-#                 if event.type == pygame.QUIT:
-#                     self.running = False
-#
-#                 if event.type == pygame.KEYDOWN:
-#                     if event.key == pygame.K_LEFT:
-#                         self.snakeLocXchanged = -self.bodySize
-#                         self.snakeLocYchanged = 0
-#                     elif event.key == pygame.K_RIGHT:
-#                         self.snakeLocXchanged = self.bodySize
-#                         self.snakeLocYchanged = 0
-#                     elif event.key == pygame.K_UP:
-#                         self.snakeLocXchanged = 0
-#                         self.snakeLocYchanged = -self.bodySize
-#                     elif event.key == pygame.K_DOWN:
-#                         self.snakeLocXchanged = 0
-#                         self.snakeLocYchanged = self.bodySize
-#
-#             self.snakeLocX += self.snakeLocXchanged
-#             self.snakeLocY += self.snakeLocYchanged
-#
-#             if self.snakeLocX >= self.screenWidth:
-#                 self.snakeLocX = self.screenWidth - self.bodySize
-#             elif self.snakeLocX < 0:
-#                 self.snakeLocX = 0
-#             elif self.snakeLocY >= self.screenHeight:
-#                 self.snakeLocY = self.screenHeight - self.bodySize
-#             elif self.snakeLocY <= 0:
-#                 self.snakeLocY = 0
-#
-#             self.screen.fill((255, 255, 255))
-#             pygame.draw.rect(self.screen, (0, 0, 255), [self.snakeLocX, self.snakeLocY, self.bodySize, self.bodySize])
-#             self.food.newFood()
-#             pygame.display.update()
-#             if self.snakeLocX == self.food.foodLocationX and self.snakeLocY == self.food.foodLocationY:
-#                 self.food.foodLocation()
-#                 self.snakeLength += 1
-#             self.clock.tick(self.snakeSpeed)
-#
-#
-# Game()
+        for i in self.snakeList[:-1]:
+            if i == self.snakeHead:
+                self.gameClose = True
+        if self.snakeLocX >= self.screen.get_width() or self.snakeLocX <= 0 or self.snakeLocY >= self.screen.get_height() or self.snakeLocY <= 0:
+            self.gameClose = True
+        # if self.snakeLocX >= self.screen.get_width():
+        #     self.snakeLocX = self.screen.get_width() - self.bodySize * len(self.snakeList)
+        # elif self.snakeLocX <= 0:
+        #     self.snakeLocX = 0 + self.bodySize * len(self.snakeList)
+        # elif self.snakeLocY >= self.screen.get_height():
+        #     self.snakeLocY = self.screen.get_height() - self.bodySize * len(self.snakeList)
+        # elif self.snakeLocY <= 0:
+        #     self.snakeLocY = 0 + self.bodySize * len(self.snakeList)
+
+    def left(self):
+        self.snakeLocXchanged = -self.bodySize
+        self.snakeLocYchanged = 0
+
+    def right(self):
+        self.snakeLocXchanged = self.bodySize
+        self.snakeLocYchanged = 0
+
+    def up(self):
+        self.snakeLocXchanged = 0
+        self.snakeLocYchanged = -self.bodySize
+
+    def down(self):
+        print("sd")
+        self.snakeLocXchanged = 0
+        self.snakeLocYchanged = self.bodySize
