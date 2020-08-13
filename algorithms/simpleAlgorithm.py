@@ -4,14 +4,14 @@ class SimpleAlg:
         self.snake = snake
         self.direction = 0
 
-    def findPath(self, foodLocX, foodLocY):
-        if self.snake.snakeLocX < foodLocX:
+    def findPath(self, foodLoc):
+        if self.snake.snakeLoc[0] < foodLoc[0]:
             self.direction = 0
-        if self.snake.snakeLocX > foodLocX:
+        if self.snake.snakeLoc[0] > foodLoc[0]:
             self.direction = 1
-        if self.snake.snakeLocY < foodLocY:
+        if self.snake.snakeLoc[1] < foodLoc[1]:
             self.direction = 2
-        if self.snake.snakeLocY > foodLocY:
+        if self.snake.snakeLoc[1] > foodLoc[1]:
             self.direction = 3
         self.rules()
 
@@ -21,16 +21,17 @@ class SimpleAlg:
         self.move()
 
     def possibleMoves(self):
-        if self.direction is 0 and self.snake.snakeLocX + self.snake.bodySize not in \
+        if self.direction is 0 and self.snake.snakeLoc[0] + self.snake.bodySize not in \
                 [snakePos[0] for snakePos in self.snake.snakeList]:
             self.direction = 0
-        elif self.direction is 1 and self.snake.snakeLocX - self.snake.bodySize not in \
+        elif self.direction is 1 and self.snake.snakeLoc[0] - self.snake.bodySize not in \
                 [snakePos[0] for snakePos in self.snake.snakeList]:
             self.direction = 1
-        elif self.direction is 2 and self.snake.snakeLocY + self.snake.bodySize not in \
+
+        elif self.direction is 2 and self.snake.snakeLoc[1] + self.snake.bodySize not in \
                 [snakePos[1] for snakePos in self.snake.snakeList]:
             self.direction = 2
-        elif self.direction is 3 and self.snake.snakeLocY - self.snake.bodySize not in \
+        elif self.direction is 3 and self.snake.snakeLoc[1] - self.snake.bodySize not in \
                 [snakePos[1] for snakePos in self.snake.snakeList]:
             self.direction = 3
         else:
@@ -41,16 +42,17 @@ class SimpleAlg:
         self.bounds()
 
     def bounds(self):
-        if self.direction is 0 and self.snake.snakeLocX + self.snake.bodySize == self.screen.get_width():
+        if self.direction is 0 and self.snake.snakeLoc[0] + self.snake.bodySize == self.screen.get_width():
             self.direction += 1
-        elif self.direction is 1 and self.snake.snakeLocX - self.snake.bodySize == 0:
+        elif self.direction is 1 and self.snake.snakeLoc[0] - self.snake.bodySize == 0:
             self.direction += 1
-        elif self.direction is 2 and self.snake.snakeLocY + self.snake.bodySize == self.screen.get_height():
+        elif self.direction is 2 and self.snake.snakeLoc[1] + self.snake.bodySize == self.screen.get_height():
             self.direction += 1
-        elif self.direction is 3 and self.snake.snakeLocY - self.snake.bodySize == 0:
+        elif self.direction is 3 and self.snake.snakeLoc[1] - self.snake.bodySize == 0:
             self.direction = 0
 
     def move(self):
+        self.snake.steps += 1
         if self.direction is 0:
             self.snake.right()
         elif self.direction is 1:
