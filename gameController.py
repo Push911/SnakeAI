@@ -12,7 +12,7 @@ class Game:
         self.screen = pygame.display.set_mode([self.screenWidth, self.screenHeight])
         pygame.display.set_caption("Snake AI")
         self.bodySize = 10
-        self.snakeSpeed = 15
+        self.snakeSpeed = 100
         self.gameOver = False
         self.clock = pygame.time.Clock()
         self.food = Food(self.screen)
@@ -56,9 +56,8 @@ class Game:
 
             self.algorithm.findPath(self.food.foodLocationX, self.food.foodLocationY)
             self.food.newFood()
-            # self.snake.snakePosition()
             pygame.display.update()
-            print(self.snake.snakeLocX, self.snake.snakeLocY, self.food.foodLocationX, self.food.foodLocationY)
+
             if self.snake.snakeLocX == self.food.foodLocationX and self.snake.snakeLocY == self.food.foodLocationY:
                 self.food.foodLocation()
                 self.snake.snakeLength += 1

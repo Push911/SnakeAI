@@ -13,5 +13,5 @@ class Food:
         pygame.draw.circle(self.screen, (255, 0, 0), (self.foodLocationX, self.foodLocationY), self.radius)
 
     def foodLocation(self):
-        self.foodLocationX = round(random.randrange(0, self.screen.get_width() - 2 * self.radius) / 10.0) * 10
-        self.foodLocationY = round(random.randrange(0, self.screen.get_height() - 2 * self.radius) / 10.0) * 10
+        self.foodLocationX = round(random.randrange(0, self.screen.get_width()) / 10.0) * 10
+        self.foodLocationY = round(random.randrange(0, self.screen.get_height()) / 10.0) * 10

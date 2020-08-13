@@ -2,7 +2,6 @@ import pygame
 
 
 class Snake:
-
     def __init__(self, screen):
         self.screen = screen
         self.bodySize = 10
@@ -60,6 +59,5 @@ class Snake:
         self.snakeLocYchanged = -self.bodySize
 
     def down(self):
-        print("sd")
         self.snakeLocXchanged = 0
         self.snakeLocYchanged = self.bodySize
