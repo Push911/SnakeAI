@@ -12,7 +12,7 @@ class Snake:
         self.leftDirectionVector = 0
         self.rightDirectionVector = 0
         self.snakeLength = 1
-        self.snakeList = [[400, 300], [390, 300], [380, 300]]
+        self.snakeList = [[400, 300], [410, 300], [420, 300]]
         self.snakeHead = []
         self.steps = 100
         self.gameClose = False

@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 
 
@@ -18,7 +20,7 @@ class Logic:
 
     @staticmethod
     def foodDistanceFromSnake(food, snakeLocation):
-        return np.linalg.norm(np.array(food)-np.array(snakeLocation[0]))
+        return np.linalg.norm(np.array(food) - np.array(snakeLocation[0]))
 
     def boundsCollision(self, snakeHead):
         if snakeHead[0] >= self.screen.get_width() or snakeHead[0] < 0 or snakeHead[1] >= self.screen.get_height() \
@@ -71,3 +73,25 @@ class Logic:
         else:
             direction = 3
         return direction
+
+    def angleToFood(self, snakeLocation, foodLocation):
+        foodDirectionVector = np.array(foodLocation) - np.array(snakeLocation[0])
+        snakeDirectionVector = np.array(snakeLocation[0]) - np.array(snakeLocation[1])
+
+        normFoodDirectionVector = np.linalg.norm(foodDirectionVector)
+        normSnakeDirectionVector = np.linalg.norm(snakeDirectionVector)
+
+        if normFoodDirectionVector == 0:
+            normFoodDirectionVector = self.snake.bodySize
+        if normSnakeDirectionVector == 0:
+            normSnakeDirectionVector = self.snake.bodySize
+
+        normalizedFoodDirectionVector = foodDirectionVector / normFoodDirectionVector
+        normalizedSnakeDirectionVector = snakeDirectionVector / normSnakeDirectionVector
+
+        angle = math.atan2(normalizedFoodDirectionVector[1] * normalizedSnakeDirectionVector[0] -
+                           normalizedFoodDirectionVector[0] * normalizedSnakeDirectionVector[1],
+                           normalizedFoodDirectionVector[1] * normalizedSnakeDirectionVector[1] +
+                           normalizedFoodDirectionVector[0] * normalizedSnakeDirectionVector[0]) / math.pi
+
+        return angle, snakeDirectionVector, normalizedFoodDirectionVector, normalizedSnakeDirectionVector
