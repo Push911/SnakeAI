@@ -5,7 +5,6 @@ import random
 class Food:
     def __init__(self, screen):
         self.screen = screen
-        self.radius = 5
         self.foodSize = 10
         self.foodLocationCoordinates = [0, 0]
 

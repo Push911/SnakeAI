@@ -30,7 +30,7 @@ class SimpleAI:
     def initializeWeights(self, weights):
         weights1 = weights[0:self.weights1Shape[0] * self.weights1Shape[1]]
         weights2 = weights[self.weights1Shape[0] * self.weights1Shape[1]:self.weights2Shape[0] * self.weights2Shape[1] +
-                                                                         self.weights1Shape[0] * self.weights1Shape[1]]
+                           self.weights1Shape[0] * self.weights1Shape[1]]
         weights3 = weights[
                    self.weights2Shape[0] * self.weights2Shape[1] + self.weights1Shape[0] * self.weights1Shape[1]:]
         return (weights1.reshape(self.weights1Shape[0], self.weights1Shape[1]),
@@ -80,7 +80,7 @@ class SimpleAI:
                 nextStep = self.snake.snakeList[0] + currentDirectionVector
 
                 if self.logic.boundsCollision(self.snake.snakeList[0]) == 1 \
-                        or self.logic.snakeCollision(nextStep.tolist(), self.snake.snakeList) == 1:
+                        or self.logic.snakeCollision(nextStep.tolist()) == 1:
                     self.score += 150
                     break
                 else:

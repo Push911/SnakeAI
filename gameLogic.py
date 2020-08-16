@@ -7,13 +7,9 @@ class Logic:
     def __init__(self, screen, snake):
         self.screen = screen
         self.snake = snake
-        # self.currentDirectionVector = []
-        # self.leftDirectionVector = []
-        # self.rightDirectionVector = []
 
-    @staticmethod
-    def snakeCollision(snakeLoc, snakeList):
-        if snakeLoc in snakeList[1:]:
+    def snakeCollision(self, snakeLoc):
+        if snakeLoc in self.snake.snakeList[1:]:
             return 1
         else:
             return 0
@@ -31,19 +27,19 @@ class Logic:
 
     def isDirectionBlocked(self, snakeList, currentDirectionVector):
         nextStep = snakeList[0] + currentDirectionVector
-        if self.boundsCollision(nextStep) == 1 or self.snakeCollision(nextStep.tolist(), snakeList) == 1:
+        if self.boundsCollision(nextStep) == 1 or self.snakeCollision(nextStep.tolist()) == 1:
             return 1
         else:
             return 0
 
-    def blockedDirections(self, snakeList):
-        currentDirectionVector = np.array(snakeList[0]) - np.array(snakeList[1])
+    def blockedDirections(self):
+        currentDirectionVector = np.array(self.snake.snakeList[0]) - np.array(self.snake.snakeList[1])
         leftDirectionVector = np.array([currentDirectionVector[1], -currentDirectionVector[0]])
         rightDirectionVector = np.array([-currentDirectionVector[1], currentDirectionVector[0]])
 
-        isFrontBlocked = self.isDirectionBlocked(snakeList, currentDirectionVector)
-        isLeftBlocked = self.isDirectionBlocked(snakeList, leftDirectionVector)
-        isRightBlocked = self.isDirectionBlocked(snakeList, rightDirectionVector)
+        isFrontBlocked = self.isDirectionBlocked(self.snake.snakeList, currentDirectionVector)
+        isLeftBlocked = self.isDirectionBlocked(self.snake.snakeList, leftDirectionVector)
+        isRightBlocked = self.isDirectionBlocked(self.snake.snakeList, rightDirectionVector)
 
         return currentDirectionVector, isFrontBlocked, isLeftBlocked, isRightBlocked
 

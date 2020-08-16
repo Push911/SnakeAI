@@ -1,7 +1,11 @@
+from gameLogic import Logic
+
+
 class SimpleAlg:
     def __init__(self, screen, snake):
         self.screen = screen
         self.snake = snake
+        self.logic = Logic(self.screen, self.snake)
         self.direction = 0
 
     def findPath(self, foodLoc):
@@ -38,7 +42,7 @@ class SimpleAlg:
             self.direction += 1
             if self.direction is 4:
                 self.direction = 0
-            self.rules()
+            self.possibleMoves()
         self.bounds()
 
     def bounds(self):
@@ -52,7 +56,7 @@ class SimpleAlg:
             self.direction = 0
 
     def move(self):
-        self.snake.steps += 1
+        # self.snake.steps += 1
         if self.direction is 0:
             self.snake.right()
         elif self.direction is 1:
