@@ -1,11 +1,7 @@
-from gameLogic import Logic
-
-
 class SimpleAlg:
     def __init__(self, screen, snake):
         self.screen = screen
         self.snake = snake
-        self.logic = Logic(self.screen, self.snake)
         self.direction = 0
 
     def findPath(self, foodLoc):

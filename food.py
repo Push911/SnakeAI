@@ -5,7 +5,7 @@ import random
 class Food:
     def __init__(self, screen):
         self.screen = screen
-        self.foodSize = 10
+        self.foodSize = 20
         self.foodLocationCoordinates = [0, 0]
 
     def newFood(self):
@@ -14,5 +14,5 @@ class Food:
                                      self.foodSize, self.foodSize))
 
     def foodLocation(self):
-        self.foodLocationCoordinates = [round(random.randrange(0, self.screen.get_width()) / 10.0) * 10,
-                                        round(random.randrange(0, self.screen.get_height()) / 10.0) * 10]
+        self.foodLocationCoordinates = [round(random.randrange(0, self.screen.get_width()) / self.foodSize) * self.foodSize,
+                                        round(random.randrange(0, self.screen.get_height()) / self.foodSize) * self.foodSize]
