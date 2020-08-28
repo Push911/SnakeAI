@@ -17,7 +17,6 @@ class Node:
 class AStar:
 	def __init__(self, screen):
 		self.screen = screen
-		self.food = Food(self.screen)
 		self.snake = Snake(self.screen)
 		self.gridMatrix = []
 		self.path = []
@@ -26,13 +25,10 @@ class AStar:
 		self.directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 
 	def getStartEndPositions(self):
-		# for row in self.gridMatrix:
-		# 	print(row)
 		for rowIndex, row in enumerate(self.gridMatrix):
 			for colIndex, col in enumerate(row):
 				if col is 3:
 					self.start = (rowIndex, colIndex)
-					print(self.start)
 				if col is 1:
 					self.end = (rowIndex, colIndex)
 
@@ -106,24 +102,44 @@ class AStar:
 	def distance(currentNode, endNode):
 		return (currentNode.position[0] - endNode.position[0]) ** 2 + (currentNode.position[1] - endNode.position[1]) ** 2
 
+	def createMatrix(self, food):
+		rows = 40
+
+		self.gridMatrix = [[0 for _ in range(rows)] for _ in range(rows)]
+		print("Food loc", food.foodLocationCoordinates)
+		self.gridMatrix[int(food.foodLocationCoordinates[1] / self.snake.bodySize)][int(food.foodLocationCoordinates[0] / self.snake.bodySize)] = 1
+		for body in self.snake.snakeList:
+			if int(self.snake.snakeList[-1][0] / self.snake.bodySize) < len(self.gridMatrix):
+				if int(self.snake.snakeList[-1][1] / self.snake.bodySize) < len(self.gridMatrix):
+					self.gridMatrix[int(body[1] / self.snake.bodySize)][int(body[0] / self.snake.bodySize)] = 2
+					head = self.snake.snakeList[-1]
+					self.gridMatrix[int(head[1] / self.snake.bodySize)][int(head[0] / self.snake.bodySize)] = 3
+
+				if self.snake.snakeList[-1] == food.foodLocationCoordinates:
+					self.snake.snakeLength += 1
+					food.foodLocation()
+					break
+			else:
+				self.snake.gameClose = True
+				continue
+
 	def move(self):
-		print(self.start, self.end)
-		# self.getStartEndPositions()
-		# print(self.path)
+		self.getStartEndPositions()
+		print(self.path)
+
 		if len(self.path) > 1:
-			pos = (self.path[-1][0] - self.path[-2][0], self.path[-1][1] - self.path[-2][1])
+			pos = (self.path[0][0] - self.path[1][0], self.path[0][1] - self.path[1][1])
 		else:
 			pos = (0, 0)
 
-		if pos == (-1, 0):
+		if pos == (0, -1):
 			self.snake.left()
-		elif pos == (1, 0):
-			self.snake.right()
-		elif pos == (0, -1):
-			self.snake.up()
 		elif pos == (0, 1):
+			self.snake.right()
+		elif pos == (-1, 0):
+			self.snake.up()
+		elif pos == (1, 0):
 			self.snake.down()
 
 		self.snake.snakePosition()
-		# self.path.pop(-1)
-		print(pos)
+		print("self", self.snake.snakeList)

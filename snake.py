@@ -24,10 +24,9 @@ class Snake:
     def snakePosition(self):
         self.snakeLoc[0] += self.snakeLocXchanged
         self.snakeLoc[1] += self.snakeLocYchanged
-
         self.snakeHead = [self.snakeLoc[0], self.snakeLoc[1]]
         self.snakeList.append(self.snakeHead)
-        print(self.snakeList)
+
         if len(self.snakeList) > self.snakeLength:
             del self.snakeList[0]
 
@@ -39,16 +38,9 @@ class Snake:
         for i in self.snakeList[:-1]:
             if i == self.snakeHead:
                 self.gameClose = True
+
         if self.snakeLoc[0] >= self.screen.get_width() or self.snakeLoc[0] <= 0 or self.snakeLoc[1] >= self.screen.get_height() or self.snakeLoc[1] <= 0:
             self.gameClose = True
-        # if self.snakeLocX >= self.screen.get_width():
-        #     self.snakeLocX = self.screen.get_width() - self.bodySize * len(self.snakeList)
-        # elif self.snakeLocX <= 0:
-        #     self.snakeLocX = 0 + self.bodySize * len(self.snakeList)
-        # elif self.snakeLocY >= self.screen.get_height():
-        #     self.snakeLocY = self.screen.get_height() - self.bodySize * len(self.snakeList)
-        # elif self.snakeLocY <= 0:
-        #     self.snakeLocY = 0 + self.bodySize * len(self.snakeList)
 
     def left(self):
         print("LEFT")

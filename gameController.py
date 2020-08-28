@@ -12,7 +12,7 @@ class Game:
         self.screenHeight = 800
         self.screen = pygame.display.set_mode([self.screenWidth, self.screenHeight])
         pygame.display.set_caption("Snake AI")
-        self.snakeSpeed = 10
+        self.snakeSpeed = 100
         self.clock = pygame.time.Clock()
         self.food = Food(self.screen)
         self.snake = Snake(self.screen)
@@ -26,19 +26,7 @@ class Game:
         rows = 40
         sizeBtw = self.screenWidth // rows
 
-        self.aStar.gridMatrix = [[0 for _ in range(rows)] for _ in range(rows)]
-        self.aStar.gridMatrix[int(self.food.foodLocationCoordinates[1] / self.snake.bodySize)][int(self.food.foodLocationCoordinates[0] / self.snake.bodySize)] = 1
-
-        for body in self.snake.snakeList:
-            if int(self.snake.snakeList[-1][0] / self.snake.bodySize) < len(self.aStar.gridMatrix):
-                if int(self.snake.snakeList[-1][1] / self.snake.bodySize) < len(self.aStar.gridMatrix):
-                    self.aStar.gridMatrix[int(body[1] / self.snake.bodySize)][int(body[0] / self.snake.bodySize)] = 2
-                    head = self.snake.snakeList[-1]
-                    # print(self.snake.snakeList)
-                    self.aStar.gridMatrix[int(head[1] / self.snake.bodySize)][int(head[0] / self.snake.bodySize)] = 3
-            else:
-                self.snake.gameClose = True
-                continue
+        self.aStar.createMatrix(self.food)
 
         x, y = 0, 0
         for row in range(rows):
@@ -69,20 +57,13 @@ class Game:
                         self.snake.down()
 
             self.snake.snakePosition()
-            print(self.snake.snakeList)
             self.aStar.getCurrentLocation()
             self.aStar.aStar()
-            # self.aStar.move()
-            self.food.newFood()
-            print(self.aStar.path)
+            self.aStar.move()
             self.board()
-            pygame.display.update()
+            self.food.newFood()
 
-            if self.snake.snakeLoc[0] == self.food.foodLocationCoordinates[0] \
-                    and self.snake.snakeLoc[1] == self.food.foodLocationCoordinates[1]:
-                self.food.foodLocation()
-                self.snake.snakeLength += 1
-                self.aStar.aStar()
+            pygame.display.update()
 
             self.clock.tick(self.snakeSpeed)
 

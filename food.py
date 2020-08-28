@@ -14,5 +14,5 @@ class Food:
                                      self.foodSize, self.foodSize))
 
     def foodLocation(self):
-        self.foodLocationCoordinates = [round(random.randrange(0, self.screen.get_width()) / self.foodSize) * self.foodSize,
-                                        round(random.randrange(0, self.screen.get_height()) / self.foodSize) * self.foodSize]
+        self.foodLocationCoordinates = [round(random.randrange(0, self.screen.get_width() - self.foodSize) / self.foodSize) * self.foodSize,
+                                        round(random.randrange(0, self.screen.get_height() - self.foodSize) / self.foodSize) * self.foodSize]
