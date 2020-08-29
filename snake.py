@@ -26,7 +26,6 @@ class Snake:
         self.snakeLoc[1] += self.snakeLocYchanged
         self.snakeHead = [self.snakeLoc[0], self.snakeLoc[1]]
         self.snakeList.append(self.snakeHead)
-
         if len(self.snakeList) > self.snakeLength:
             del self.snakeList[0]
 

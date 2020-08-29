@@ -1,7 +1,7 @@
 import pygame
 from food import Food
 from snake import Snake
-from algorithms.AstarPathfindingSnake import AStar
+from algorithms.BreadthFirstSearchSnake import BFS
 
 
 class Game:
@@ -16,7 +16,8 @@ class Game:
         self.clock = pygame.time.Clock()
         self.food = Food(self.screen)
         self.snake = Snake(self.screen)
-        self.aStar = AStar(self.screen)
+        # self.aStar = AStar(self.screen)
+        self.bfs = BFS(self.screen, self.food, self.snake)
         self.gameOver = False
         self.snake.gameClose = False
         self.food.foodLocation()
@@ -26,7 +27,8 @@ class Game:
         rows = 40
         sizeBtw = self.screenWidth // rows
 
-        self.aStar.createMatrix(self.food)
+        # self.aStar.createMatrix(self.food)
+        self.bfs.createMatrix()
 
         x, y = 0, 0
         for row in range(rows):
@@ -57,9 +59,11 @@ class Game:
                         self.snake.down()
 
             self.snake.snakePosition()
-            self.aStar.getCurrentLocation()
-            self.aStar.aStar()
-            self.aStar.move()
+            # self.aStar.getCurrentLocation()
+            # self.aStar.aStar()
+            # self.aStar.move()
+            self.bfs.getCurrentLocation()
+            self.bfs.bfs()
             self.board()
             self.food.newFood()
 
