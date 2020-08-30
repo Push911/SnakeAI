@@ -1,7 +1,9 @@
 import pygame
 from food import Food
 from snake import Snake
-from algorithms.BreadthFirstSearchSnake import BFS
+# from algorithms.BreadthFirstSearchSnake import BFS
+# from algorithms.AstarPathfindingSnake import AStar
+from algorithms.ReinforcementLearningAlgorithmSnake import ReinforcementLearning
 
 
 class Game:
@@ -12,12 +14,13 @@ class Game:
         self.screenHeight = 800
         self.screen = pygame.display.set_mode([self.screenWidth, self.screenHeight])
         pygame.display.set_caption("Snake AI")
-        self.snakeSpeed = 100
+        self.snakeSpeed = 10
         self.clock = pygame.time.Clock()
         self.food = Food(self.screen)
         self.snake = Snake(self.screen)
         # self.aStar = AStar(self.screen)
-        self.bfs = BFS(self.screen, self.food, self.snake)
+        # self.bfs = BFS(self.screen, self.food, self.snake)
+        self.rl = ReinforcementLearning(self.screen, self.snake, self.food)
         self.gameOver = False
         self.snake.gameClose = False
         self.food.foodLocation()
@@ -28,7 +31,8 @@ class Game:
         sizeBtw = self.screenWidth // rows
 
         # self.aStar.createMatrix(self.food)
-        self.bfs.createMatrix()
+
+        # self.bfs.createMatrix()
 
         x, y = 0, 0
         for row in range(rows):
@@ -59,11 +63,16 @@ class Game:
                         self.snake.down()
 
             self.snake.snakePosition()
+
             # self.aStar.getCurrentLocation()
             # self.aStar.aStar()
             # self.aStar.move()
-            self.bfs.getCurrentLocation()
-            self.bfs.bfs()
+
+            # self.bfs.getCurrentLocation()
+            # self.bfs.bfs()
+
+            self.rl.reward()
+
             self.board()
             self.food.newFood()
 

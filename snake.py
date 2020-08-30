@@ -42,21 +42,17 @@ class Snake:
             self.gameClose = True
 
     def left(self):
-        print("LEFT")
         self.snakeLocXchanged = -self.bodySize
         self.snakeLocYchanged = 0
 
     def right(self):
-        print("RIGHT")
         self.snakeLocXchanged = self.bodySize
         self.snakeLocYchanged = 0
 
     def up(self):
-        print("UP")
         self.snakeLocXchanged = 0
         self.snakeLocYchanged = -self.bodySize
 
     def down(self):
-        print("DOWN")
         self.snakeLocXchanged = 0
         self.snakeLocYchanged = self.bodySize
