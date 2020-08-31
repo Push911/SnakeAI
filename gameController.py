@@ -3,7 +3,7 @@ from food import Food
 from snake import Snake
 # from algorithms.BreadthFirstSearchSnake import BFS
 # from algorithms.AstarPathfindingSnake import AStar
-from algorithms.ReinforcementLearningAlgorithmSnake import ReinforcementLearning
+from algorithms.ReinforcementLearningMatrix import ReinforcementLearning
 
 
 class Game:

@@ -38,7 +38,8 @@ class Snake:
             if i == self.snakeHead:
                 self.gameClose = True
 
-        if self.snakeLoc[0] >= self.screen.get_width() or self.snakeLoc[0] <= 0 or self.snakeLoc[1] >= self.screen.get_height() or self.snakeLoc[1] <= 0:
+        if self.snakeLoc[0] >= self.screen.get_width() or self.snakeLoc[0] <= 0 or \
+                self.snakeLoc[1] >= self.screen.get_height() or self.snakeLoc[1] <= 0:
             self.gameClose = True
 
     def left(self):
@@ -56,3 +57,13 @@ class Snake:
     def down(self):
         self.snakeLocXchanged = 0
         self.snakeLocYchanged = self.bodySize
+
+    def move(self, action):
+        if action == 0:
+            self.left()
+        elif action == 1:
+            self.right()
+        elif action == 2:
+            self.up()
+        elif action == 3:
+            self.down()
