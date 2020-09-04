@@ -27,11 +27,11 @@ class Environment(gym.Env):
 
         self.snake = turtle.Turtle()
         self.snake.shape("square")
-        self.snake.color("green")
         self.snake.speed(0)
         # penup - no drawing while moving
         self.snake.penup()
-        self.snake.goto(SCREENDIM / 2, SCREENDIM / 2)
+        self.snake.color("green")
+        self.snake.goto(0, 0)
         self.snake.direction = "stop"
         self.snakeList = []
         self.bodySize = 20
@@ -63,25 +63,25 @@ class Environment(gym.Env):
 
     @staticmethod
     def foodLocation():
-        foodX = random.randint(-SCREENDIM / 2, SCREENDIM / 2)
-        foodY = random.randint(-SCREENDIM / 2, SCREENDIM / 2)
+        foodX = random.randint(-ROWS / 2, ROWS / 2)
+        foodY = random.randint(-ROWS / 2, ROWS / 2)
         return foodX, foodY
 
     def moveSnake(self):
-        if self.snake.direction == 'stop':
+        if self.snake.direction == "stop":
             self.reward = 0
-        if self.snake.direction == 'up':
+        if self.snake.direction == "up":
             y = self.snake.ycor()
-            self.snake.sety(y + self.bodySize)
-        if self.snake.direction == 'down':
+            self.snake.sety(y + 20)
+        if self.snake.direction == "down":
             y = self.snake.ycor()
-            self.snake.sety(y - self.bodySize)
-        if self.snake.direction == 'right':
+            self.snake.sety(y - 20)
+        if self.snake.direction == "right":
             x = self.snake.xcor()
-            self.snake.sety(x + self.bodySize)
-        if self.snake.direction == 'left':
+            self.snake.setx(x + 20)
+        if self.snake.direction == "left":
             x = self.snake.xcor()
-            self.snake.sety(x - self.bodySize)
+            self.snake.setx(x - 20)
 
     def up(self):
         if self.snake.direction != "down":
@@ -103,7 +103,7 @@ class Environment(gym.Env):
         if first or self.snake.distance(self.food) < 20:
             while True:
                 self.food.x, self.food.y = self.foodLocation()
-                self.food.goto(round(self.food.x * self.bodySize), round(self.food.y * self.bodySize))
+                self.food.goto(round(self.food.x * 20), round(self.food.y * 20))
                 if not self.checkFood():
                     break
 
@@ -111,7 +111,6 @@ class Environment(gym.Env):
                 self.updateScore()
                 self.drawSnake()
 
-            first = False
             return True
 
     def updateScore(self):
@@ -138,7 +137,7 @@ class Environment(gym.Env):
         if len(self.snakeList) > 0:
             for i in range(len(self.snakeList) - 1, 0, -1):
                 x = self.snakeList[i - 1].xcor()
-                y = self.snakeList[i - 1].xcor()
+                y = self.snakeList[i - 1].ycor()
                 self.snakeList[i].goto(x, y)
             self.snakeList[0].goto(self.snake.xcor(), self.snake.ycor())
 
@@ -160,7 +159,7 @@ class Environment(gym.Env):
                     return True
 
     def checkBounds(self):
-        if self.snake.xcor() > SCREENDIM / 2 or self.snake.xcor() < -(SCREENDIM / 2) or self.snake.ycor() > SCREENDIM / 2 or self.snake.ycor() < -(SCREENDIM / 2):
+        if self.snake.xcor() > (SCREENDIM / 2) or self.snake.xcor() < -(SCREENDIM / 2) or self.snake.ycor() > (SCREENDIM / 2) or self.snake.ycor() < -(SCREENDIM / 2):
             self.resetScore()
             return True
 
@@ -171,7 +170,7 @@ class Environment(gym.Env):
             body.goto(1000, 1000)
 
         self.snakeList = []
-        self.snake.goto(SCREENDIM / 2, SCREENDIM / 2)
+        self.snake.goto(0, 0)
         self.snake.direction = "stop"
         self.reward = 0
         self.total = 0
@@ -189,8 +188,14 @@ class Environment(gym.Env):
         if self.newFood():
             self.reward = 10
             rewardGiven = True
-            self.done = True
 
+        self.moveSnakeBody()
+        self.calculateDistance()
+
+        if self.checkSnakeBody():
+            self.reward = -100
+            rewardGiven = True
+            self.done = True
             if self.human:
                 self.reset()
 
@@ -210,7 +215,6 @@ class Environment(gym.Env):
 
         if self.human:
             time.sleep(0.2)
-            state = self.getState()
 
     def step(self, action):
         if action == 0:
@@ -279,30 +283,30 @@ class Environment(gym.Env):
         else:
             bodyLeft = 0
 
-        if self.envInfo['state_space'] == 'coordinates':
+        if self.envInfo["state_space"] == "coordinates":
             state = [self.food.scaledX, self.food.scaledY, self.snake.scaledX, self.snake.scaledY,
                      int(boundUp or bodyUp), int(boundRight or bodyRight), int(boundDown or bodyDown),
                      int(boundLeft or bodyLeft),
-                     int(self.snake.direction == 'up'), int(self.snake.direction == 'right'),
-                     int(self.snake.direction == 'down'), int(self.snake.direction == 'left')]
-        elif self.envInfo['state_space'] == 'no direction':
+                     int(self.snake.direction == "up"), int(self.snake.direction == "right"),
+                     int(self.snake.direction == "down"), int(self.snake.direction == "left")]
+        elif self.envInfo["state_space"] == "no direction":
             state = [int(self.snake.y < self.food.y), int(self.snake.x < self.food.x),
                      int(self.snake.y > self.food.y), int(self.snake.x > self.food.x),
                      int(boundUp or bodyUp), int(boundRight or bodyRight), int(boundDown or bodyDown),
                      int(boundLeft or bodyLeft), 0, 0, 0, 0]
-        elif self.envInfo['state_space'] == 'no body knowledge':
+        elif self.envInfo["state_space"] == "no body knowledge":
             state = [int(self.snake.y < self.food.y), int(self.snake.x < self.food.x),
                      int(self.snake.y > self.food.y), int(self.snake.x > self.food.x),
                      boundUp, boundRight, boundDown, boundLeft,
-                     int(self.snake.direction == 'up'), int(self.snake.direction == 'right'),
-                     int(self.snake.direction == 'down'), int(self.snake.direction == 'left')]
+                     int(self.snake.direction == "up"), int(self.snake.direction == "right"),
+                     int(self.snake.direction == "down"), int(self.snake.direction == "left")]
         else:
             state = [int(self.snake.y < self.food.y), int(self.snake.x < self.food.x),
                      int(self.snake.y > self.food.y), int(self.snake.x > self.food.x),
                      int(boundUp or bodyUp), int(boundRight or bodyRight),
                      int(boundDown or bodyDown), int(boundLeft or bodyLeft),
-                     int(self.snake.direction == 'up'), int(self.snake.direction == 'right'),
-                     int(self.snake.direction == 'down'), int(self.snake.direction == 'left')]
+                     int(self.snake.direction == "up"), int(self.snake.direction == "right"),
+                     int(self.snake.direction == "down"), int(self.snake.direction == "left")]
         return state
 
     def bye(self):
@@ -312,6 +316,7 @@ class Environment(gym.Env):
 if __name__ == "__main__":
     human = True
     env = Environment(human=human)
+
     if human:
         while True:
             env.main()
