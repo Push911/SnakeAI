@@ -203,7 +203,6 @@ class Environment(gym.Env):
             self.reward = -100
             rewardGiven = True
             self.done = True
-
             if self.human:
                 self.reset()
 
@@ -215,6 +214,7 @@ class Environment(gym.Env):
 
         if self.human:
             time.sleep(0.2)
+            state = self.getState()
 
     def step(self, action):
         if action == 0:
@@ -253,11 +253,12 @@ class Environment(gym.Env):
 
         if len(self.snakeList) > 3:
             for body in self.snakeList[3:]:
-                if body.distance(self.snake) == self.bodySize:
+                if body.distance(self.snake) == 20:
                     if body.ycor() < self.snake.ycor():
                         bodyDown.append(1)
                     elif body.ycor() > self.snake.ycor():
                         bodyUp.append(1)
+
                     if body.xcor() < self.snake.xcor():
                         bodyLeft.append(1)
                     elif body.xcor() > self.snake.xcor():
@@ -285,15 +286,15 @@ class Environment(gym.Env):
 
         if self.envInfo["state_space"] == "coordinates":
             state = [self.food.scaledX, self.food.scaledY, self.snake.scaledX, self.snake.scaledY,
-                     int(boundUp or bodyUp), int(boundRight or bodyRight), int(boundDown or bodyDown),
-                     int(boundLeft or bodyLeft),
+                     int(boundUp or bodyUp), int(boundRight or bodyRight),
+                     int(boundDown or bodyDown), int(boundLeft or bodyLeft),
                      int(self.snake.direction == "up"), int(self.snake.direction == "right"),
                      int(self.snake.direction == "down"), int(self.snake.direction == "left")]
         elif self.envInfo["state_space"] == "no direction":
             state = [int(self.snake.y < self.food.y), int(self.snake.x < self.food.x),
                      int(self.snake.y > self.food.y), int(self.snake.x > self.food.x),
-                     int(boundUp or bodyUp), int(boundRight or bodyRight), int(boundDown or bodyDown),
-                     int(boundLeft or bodyLeft), 0, 0, 0, 0]
+                     int(boundUp or bodyUp), int(boundRight or bodyRight),
+                     int(boundDown or bodyDown), int(boundLeft or bodyLeft), 0, 0, 0, 0]
         elif self.envInfo["state_space"] == "no body knowledge":
             state = [int(self.snake.y < self.food.y), int(self.snake.x < self.food.x),
                      int(self.snake.y > self.food.y), int(self.snake.x > self.food.x),
